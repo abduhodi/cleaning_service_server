@@ -7,23 +7,26 @@ import {
   Param,
   Delete,
   UseGuards,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { AuthGuard } from '../guards/auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-@UseGuards(AuthGuard)
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Post()
+  @UseGuards(AuthGuard)
+  @Post('create')
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.createCategory(createCategoryDto);
   }
 
-  @Get()
+  @Get('all')
   findAll() {
     return this.categoryService.findAll();
   }
@@ -31,6 +34,12 @@ export class CategoryController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.categoryService.findOne(+id);
+  }
+
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('upload')
+  fileUpload(@UploadedFile('file') file: any) {
+    return this.categoryService.fileUpload(file);
   }
 
   @Patch(':id')

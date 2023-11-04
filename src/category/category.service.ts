@@ -3,6 +3,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Category } from './models/category.model';
+import { uploadFile } from '../utils/upload-file.utils';
 
 @Injectable()
 export class CategoryService {
@@ -26,6 +27,10 @@ export class CategoryService {
 
   findOne(id: number) {
     return this.categoryModel.findAll({ where: { parent_category: id } });
+  }
+
+  fileUpload(file: any) {
+    return uploadFile(file);
   }
 
   update(id: number, updateCategoryDto: UpdateCategoryDto) {
