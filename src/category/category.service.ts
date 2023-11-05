@@ -4,6 +4,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Category } from './models/category.model';
 import { uploadFile } from '../utils/upload-file.utils';
+import { Post } from '../posts/models/post.model';
 
 @Injectable()
 export class CategoryService {
@@ -53,12 +54,13 @@ export class CategoryService {
 
   async findOne(id: number) {
     try {
+      const cat = await this.categoryModel.findByPk(id, { include: [Post] });
       const data = await this.categoryModel.findAll({
         where: { parent_category: id },
       });
       return {
         status: HttpStatus.OK,
-        data,
+        data: { ...cat.dataValues, children: [...data] },
         error: null,
       };
     } catch (error) {

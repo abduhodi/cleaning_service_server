@@ -8,6 +8,8 @@ import { AuthModule } from './auth/auth.module';
 import { Admin } from './auth/models/auth.model';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { PostsModule } from './posts/posts.module';
+import { Post } from './posts/models/post.model';
 
 @Module({
   imports: [
@@ -29,12 +31,13 @@ import { join } from 'path';
       username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DATABASE,
-      models: [Category, Admin],
+      models: [Category, Admin, Post],
       autoLoadModels: true,
       logging: false,
     }),
     CategoryModule,
     AuthModule,
+    PostsModule,
   ],
   controllers: [],
   providers: [],

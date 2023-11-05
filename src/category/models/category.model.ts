@@ -7,6 +7,7 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
+import { Post } from '../../posts/models/post.model';
 
 @Table({ tableName: 'category' })
 export class Category extends Model {
@@ -35,6 +36,11 @@ export class Category extends Model {
     foreignKey: 'parent_category',
     targetKey: 'id',
     as: 'parent',
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL',
   })
   parent: Category;
+
+  @HasMany(() => Post)
+  posts: Post[];
 }
