@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Category } from './models/category.model';
 import { uploadFile } from '../utils/upload-file.utils';
 import { Post } from '../posts/models/post.model';
+import { dot } from 'node:test/reporters';
 
 @Injectable()
 export class CategoryService {
@@ -14,9 +15,9 @@ export class CategoryService {
 
   async createCategory(createCategoryDto: CreateCategoryDto) {
     try {
+      console.log(createCategoryDto);
       const cat = await this.categoryModel.create({
-        name: createCategoryDto.name,
-        parent_category: createCategoryDto.parent_category,
+        ...createCategoryDto,
       });
       return {
         status: HttpStatus.CREATED,
@@ -35,8 +36,50 @@ export class CategoryService {
   async findAll() {
     try {
       const data = await this.categoryModel.findAll({
-        include: [{ model: Category, attributes: ['id', 'name'] }],
-        attributes: ['id', 'name'],
+        where: { parent_category: null },
+        include: [{ model: Category }],
+        order: [['id', 'ASC']],
+      });
+      return {
+        status: HttpStatus.OK,
+        data,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        data: null,
+        error: error.message,
+      };
+    }
+  }
+
+  async findAllServices() {
+    try {
+      const data = await this.categoryModel.findAll({
+        include: [{ model: Category }],
+        order: [['id', 'ASC']],
+      });
+      return {
+        status: HttpStatus.OK,
+        data,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        data: null,
+        error: error.message,
+      };
+    }
+  }
+
+  async findCategoryServices(id: number) {
+    try {
+      const data = await this.categoryModel.findAll({
+        where: { parent_category: id },
+        include: [{ model: Category }],
+        order: [['id', 'ASC']],
       });
       return {
         status: HttpStatus.OK,

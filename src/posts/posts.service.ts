@@ -13,7 +13,7 @@ export class PostsService {
     @InjectModel(Category) private readonly categoryModel: typeof Category,
   ) {}
 
-  async create(createPostDto: CreatePostDto, file: any) {
+  async create(createPostDto: CreatePostDto) {
     try {
       if (createPostDto.category_id) {
         const cat = await this.categoryModel.findByPk(
@@ -23,9 +23,7 @@ export class PostsService {
           throw new BadRequestException('category is not found');
         }
       }
-      const filename = await uploadFile(file);
       const post = await this.postModel.create({
-        url: filename,
         ...createPostDto,
       });
 
@@ -43,9 +41,30 @@ export class PostsService {
     }
   }
 
+  async findPosts() {
+    try {
+      const data = await this.postModel.findAll({
+        include: [{ model: Category }],
+      });
+      return {
+        status: HttpStatus.OK,
+        data,
+        error: null,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.BAD_REQUEST,
+        data: null,
+        error: error.message,
+      };
+    }
+  }
   async findAll(id: number) {
     try {
-      const data = await this.postModel.findAll({ where: { category_id: id } });
+      const data = await this.postModel.findAll({
+        where: { category_id: id },
+        include: [{ model: Category }],
+      });
       return {
         status: HttpStatus.OK,
         data,
@@ -77,7 +96,7 @@ export class PostsService {
     }
   }
 
-  async update(id: number, updatePostDto: UpdatePostDto, file: any) {
+  async update(id: number, updatePostDto: UpdatePostDto) {
     try {
       const data = await this.postModel.findByPk(id);
       if (!data) {
@@ -92,12 +111,8 @@ export class PostsService {
         }
       }
       let updated = {};
-      if (file) {
-        const filename = await uploadFile(file);
-        updated = await data.update({ filename, ...updatePostDto });
-      } else {
-        updated = await data.update(updatePostDto);
-      }
+
+      updated = await data.update(updatePostDto);
 
       return {
         status: HttpStatus.OK,

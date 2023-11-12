@@ -23,7 +23,39 @@ export class Category extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  name: string;
+  name_uz: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  name_ru: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  name_en: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  url: string;
+
+  @Column({
+    type: DataType.TEXT,
+    allowNull: false,
+  })
+  description_uz: string;
+  @Column({
+    type: DataType.TEXT,
+    allowNull: false,
+  })
+  description_ru: string;
+  @Column({
+    type: DataType.TEXT,
+    allowNull: false,
+  })
+  description_en: string;
 
   @ForeignKey(() => Category)
   @Column({

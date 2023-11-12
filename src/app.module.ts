@@ -10,12 +10,15 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { PostsModule } from './posts/posts.module';
 import { Post } from './posts/models/post.model';
+import { MessagesModule } from './messages/messages.module';
+import { EventsModule } from './websocket/events.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'data'),
       serveRoot: '/api',
+      exclude: ['index.html'],
     }),
     ConfigModule.forRoot({
       envFilePath: '.env',
@@ -38,6 +41,8 @@ import { Post } from './posts/models/post.model';
     CategoryModule,
     AuthModule,
     PostsModule,
+    MessagesModule,
+    EventsModule,
   ],
   controllers: [],
   providers: [],

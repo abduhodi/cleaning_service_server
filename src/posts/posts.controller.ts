@@ -17,53 +17,39 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostFileValidator } from '../validators/post-file.validator';
 
-@Controller('posts')
+@Controller('post')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @UseInterceptors(FileInterceptor('file'))
-  @Post('add')
-  create(
-    @Body() createPostDto: CreatePostDto,
-    @UploadedFile(
-      'file',
-      new ParseFilePipe({
-        validators: [new PostFileValidator({})],
-      }),
-    )
-    file: any,
-  ) {
-    return this.postsService.create(createPostDto, file);
+  @Post()
+  create(@Body() createPostDto: CreatePostDto) {
+    return this.postsService.create(createPostDto);
   }
 
   @Get('category/:id')
   findAll(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.findAll(id);
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+  @Get()
+  findPosts() {
+    return this.postsService.findPosts();
   }
 
-  @UseInterceptors(FileInterceptor('file'))
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.findOne(id);
+  }
+
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updatePostDto: UpdatePostDto,
-    @UploadedFile(
-      'file',
-      new ParseFilePipe({
-        validators: [new PostFileValidator({})],
-      }),
-    )
-    file: any,
   ) {
-    return this.postsService.update(+id, updatePostDto, file);
+    return this.postsService.update(id, updatePostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.remove(id);
   }
 }

@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as bcrypt from 'bcrypt';
 
 async function start() {
   try {

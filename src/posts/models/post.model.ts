@@ -25,6 +25,23 @@ export class Post extends Model {
   url: string;
 
   @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  title_uz: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  title_ru: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  title_en: string;
+
+  @Column({
     type: DataType.TEXT,
     allowNull: true,
     defaultValue: '',
